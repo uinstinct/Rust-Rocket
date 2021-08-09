@@ -29,7 +29,13 @@ fn json() -> Json<&'static str> {
     )
 }
 
+// requires a content-type application/json header
+#[post("/", format = "json")]
+fn posting() -> Json<&'static str> {
+    Json("doing")
+}
+
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index, read, json])
+    rocket::build().mount("/", routes![index, read, json, posting])
 }
