@@ -35,7 +35,14 @@ fn posting() -> Json<&'static str> {
     Json("doing")
 }
 
+#[catch(404)]
+fn custom_catcher() -> &'static str {
+    "custom 404 catcher"
+}
+
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index, read, json, posting])
+    rocket::build()
+        .register("/", catchers![custom_catcher])
+        .mount("/", routes![index, read, json, posting])
 }
