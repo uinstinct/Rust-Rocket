@@ -3,15 +3,22 @@ extern crate rocket;
 
 use rocket::response::content::Json;
 use rocket::response::status;
+use std::path::PathBuf;
 
 #[get("/")]
 fn index() -> &'static str {
+    // &'static meaning it will be in the binary itself
     "Master Blaster"
 }
 
 #[get("/<id>")]
 fn read(id: usize) -> status::Accepted<String> {
     status::Accepted(Some(format!("id: {}", id)))
+}
+
+#[get("/custom/<path..>")]
+fn custom(path: PathBuf) -> String {
+    format!("reached a path {}", path.as_path().display()) // path can be anything "" or "master"
 }
 
 // struct Message<'r> {
@@ -44,5 +51,5 @@ fn custom_catcher() -> &'static str {
 fn rocket() -> _ {
     rocket::build()
         .register("/", catchers![custom_catcher])
-        .mount("/", routes![index, read, json, posting])
+        .mount("/", routes![index, read, json, posting, custom])
 }
