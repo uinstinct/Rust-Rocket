@@ -33,7 +33,7 @@ async fn a2() {
 }*/
 
 #[get("/<id>")]
-async fn retreive(id: &str) -> Option<File> {
+async fn retreive(id: PasteId<'_>) -> Option<File> {
     let file_name = format!("upload/{id}", id = id);
     File::open(&file_name).await.ok()
 }

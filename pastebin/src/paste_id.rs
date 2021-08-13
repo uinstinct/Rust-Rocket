@@ -2,6 +2,7 @@ use std::borrow::Cow;
 use std::fmt;
 
 use rand::{self, Rng};
+use rocket::request::FromParam;
 
 const BASE: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -23,5 +24,16 @@ impl<'a> PasteId<'a> {
 impl fmt::Display for PasteId<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl<'a> FromParam<'a> for PasteId<'a> {
+    type Error = &'a str;
+
+    fn from_param(param: &'a str) -> Result<Self, Self::Error> {
+        match param.chars().all(|c| c.is_ascii_alphanumeric()) {
+            true => Ok(PasteId(param.into())),
+            false => Err(param),
+        }
     }
 }
